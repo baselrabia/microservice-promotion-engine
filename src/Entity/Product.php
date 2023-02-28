@@ -18,13 +18,13 @@ class Product
     #[ORM\Column]
     private ?int $price = null;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductPromotion::class)]
-    private Collection $productPromotions;
-
-    public function __construct()
-    {
-        $this->productPromotions = new ArrayCollection();
-    }
+//    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductPromotion::class)]
+//    private Collection $productPromotions;
+//
+//    public function __construct()
+//    {
+//        $this->productPromotions = new ArrayCollection();
+//    }
 
     public function getId(): ?int
     {
@@ -43,33 +43,34 @@ class Product
         return $this;
     }
 
-    /**
-     * @return Collection<int, ProductPromotion>
-     */
-    public function getProductPromotions(): Collection
-    {
-        return $this->productPromotions;
-    }
+//    /**
+//     * @return Collection<int, ProductPromotion>
+//     */
+//    public function getProductPromotions(): Collection
+//    {
+//        return $this->productPromotions;
+//    }
+//
+//    public function addProductPromotion(ProductPromotion $productPromotion): self
+//    {
+//        if (!$this->productPromotions->contains($productPromotion)) {
+//            $this->productPromotions->add($productPromotion);
+//            $productPromotion->setProduct($this);
+//        }
+//
+//        return $this;
+//    }
+//
+//    public function removeProductPromotion(ProductPromotion $productPromotion): self
+//    {
+//        if ($this->productPromotions->removeElement($productPromotion)) {
+//            // set the owning side to null (unless already changed)
+//            if ($productPromotion->getProduct() === $this) {
+//                $productPromotion->setProduct(null);
+//            }
+//        }
+//
+//        return $this;
+//    }
 
-    public function addProductPromotion(ProductPromotion $productPromotion): self
-    {
-        if (!$this->productPromotions->contains($productPromotion)) {
-            $this->productPromotions->add($productPromotion);
-            $productPromotion->setProduct($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProductPromotion(ProductPromotion $productPromotion): self
-    {
-        if ($this->productPromotions->removeElement($productPromotion)) {
-            // set the owning side to null (unless already changed)
-            if ($productPromotion->getProduct() === $this) {
-                $productPromotion->setProduct(null);
-            }
-        }
-
-        return $this;
-    }
 }

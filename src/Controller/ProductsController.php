@@ -3,17 +3,26 @@
 namespace App\Controller;
 
 use App\DTO\LowestPriceEnquiry;
+use App\Entity\Promotion;
 use App\Filter\promotionsFilterInterface;
+use App\Repository\ProductRepository;
 use App\Service\Serializer\DTOSerializer;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class ProductsController extends AbstractController
 {
+    public function __construct(
+        private ProductRepository $productRepository,
+        private EntityManagerInterface $entityManager
+    )
+    {
+    }
+
     #[Route('/products/{id}/lowest-price', name: 'lowest-price', methods: 'POST')]
     public function lowestPrice(Request $request, int $id, promotionsFilterInterface $promotionsFilter, DTOSerializer $serializer): Response
     {
@@ -40,13 +49,27 @@ class ProductsController extends AbstractController
 
         // 2. pass the Enquiry into a Promotion filter
         // this appropriate promotion will be applied
+        $product  = $this->productRepository->find($id); // add error handling for not found product
 
-        $modifiedEnquiry = $promotionsFilter->apply($lowestPriceEnquiry);
+
+        $lowestPriceEnquiry->setProduct($product);
+
+        $promotions = $this->entityManager->getRepository(Promotion::class)
+            ->findValidForProduct(
+                $product,
+                date_create_immutable($lowestPriceEnquiry->getRequestDate())
+            );// if null ??
+
+
+
+
+
+        $modifiedEnquiry = $promotionsFilter->apply($lowestPriceEnquiry, ...$promotions);
 
         // 3. return the modified Enquiry
 
         $responseContent = $serializer->serialize($modifiedEnquiry, "json");
-        return new Response($responseContent, 200);
+        return new Response($responseContent, 200, ["content-type" => 'json']);
     }
 
 
