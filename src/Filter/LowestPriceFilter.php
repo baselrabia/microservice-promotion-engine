@@ -26,7 +26,7 @@ class LowestPriceFilter implements promotionsFilterInterface
         //  // 2. update $lowestPrice
         //
 
-    public function apply(PromotionEnquiryInterface $enquiry,Promotion ...$promotions): PriceEnquiryInterface
+    public function apply(PromotionEnquiryInterface $enquiry,Promotion ...$promotions): PromotionEnquiryInterface
     {
         $price = $enquiry->getProduct()->getPrice();
         $enquiry->setPrice($price);
@@ -50,11 +50,11 @@ class LowestPriceFilter implements promotionsFilterInterface
 
         return $enquiry;
 
-        $enquiry->setDiscountedPrice(50);
-        $enquiry->setPrice(100);
-        $enquiry->setPromotionId(3);
-        $enquiry->setPromotionName('Black Friday half price sale');
-
-        return $enquiry;
+//        $enquiry->setDiscountedPrice(50);
+//        $enquiry->setPrice(100);
+//        $enquiry->setPromotionId(3);
+//        $enquiry->setPromotionName('Black Friday half price sale');
+//
+//        return $enquiry;
     }
 }
