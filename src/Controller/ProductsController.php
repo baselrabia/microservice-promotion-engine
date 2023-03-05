@@ -2,12 +2,11 @@
 
 namespace App\Controller;
 
+use App\Cache\PromotionCache;
 use App\DTO\LowestPriceEnquiry;
-use App\Entity\Promotion;
 use App\Filter\promotionsFilterInterface;
 use App\Repository\ProductRepository;
 use App\Service\Serializer\DTOSerializer;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,13 +17,18 @@ class ProductsController extends AbstractController
 {
     public function __construct(
         private ProductRepository $productRepository,
-        private EntityManagerInterface $entityManager
     )
     {
     }
 
     #[Route('/products/{id}/lowest-price', name: 'lowest-price', methods: 'POST')]
-    public function lowestPrice(Request $request, int $id, promotionsFilterInterface $promotionsFilter, DTOSerializer $serializer): Response
+    public function lowestPrice(
+        Request                   $request,
+        int                       $id,
+        promotionsFilterInterface $promotionsFilter,
+        DTOSerializer             $serializer,
+        PromotionCache            $promotionCache
+    ): Response
     {
         if ($request->headers->has('force_fail')) {
 
@@ -49,20 +53,13 @@ class ProductsController extends AbstractController
 
         // 2. pass the Enquiry into a Promotion filter
         // this appropriate promotion will be applied
-        $product  = $this->productRepository->find($id); // add error handling for not found product
+        $product = $this->productRepository->find($id); // add error handling for not found product
 
 
         $lowestPriceEnquiry->setProduct($product);
 
-        $promotions = $this->entityManager->getRepository(Promotion::class)
-            ->findValidForProduct(
-                $product,
-                date_create_immutable($lowestPriceEnquiry->getRequestDate())
-            );// if null ??
-
-
-
-
+        // cache in use
+        $promotions = $promotionCache->findValidForProduct($product, $lowestPriceEnquiry->getRequestDate());
 
         $modifiedEnquiry = $promotionsFilter->apply($lowestPriceEnquiry, ...$promotions);
 
