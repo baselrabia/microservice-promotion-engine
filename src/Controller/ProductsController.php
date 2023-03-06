@@ -53,7 +53,7 @@ class ProductsController extends AbstractController
 
         // 2. pass the Enquiry into a Promotion filter
         // this appropriate promotion will be applied
-        $product = $this->productRepository->find($id); // add error handling for not found product
+        $product = $this->productRepository->findOrFail($id); // add error handling for not found product
 
 
         $lowestPriceEnquiry->setProduct($product);

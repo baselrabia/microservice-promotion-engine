@@ -17,6 +17,7 @@
 ###> phpunit/phpunit ###
 ###< phpunit/phpunit ###
 
+/redisdata/
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/phpstorm,symfony
