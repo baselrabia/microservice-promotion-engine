@@ -30,18 +30,7 @@ class ProductsController extends AbstractController
         PromotionCache            $promotionCache
     ): Response
     {
-        if ($request->headers->has('force_fail')) {
-
-            return new JsonResponse(
-                ['error' => 'Promotions Engine failure message'],
-                $request->headers->get('force_fail')
-            );
-        }
-
-
         // 1. deserialize json data into a LowestPriceEnquiry
-
-
         // explain auto wiring using serializer
         // auto wiring when we use the interface promotionsFilterInterface the container serive ioc  will check for who impelent it
         // will find only one class use it then will crete an object using the dependy injection

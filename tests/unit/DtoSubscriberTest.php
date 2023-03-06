@@ -4,6 +4,7 @@ namespace App\Tests\unit;
 
 use App\DTO\LowestPriceEnquiry;
 use App\Event\AfterDtoCreatedEvent;
+use App\Service\ServiceException;
 use App\Tests\ServiceTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
@@ -22,8 +23,8 @@ class DtoSubscriberTest extends ServiceTestCase
         $eventDispatcher = $this->container->get("debug.event_dispatcher");
 
         // Expect
-        $this->expectException(ValidationFailedException::class);
-        $this->expectExceptionMessage('This value should be positive.');
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('ConstraintViolationList');
 
         // when
         $eventDispatcher->dispatch($event, $event::NAME);
